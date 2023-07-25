@@ -1,4 +1,3 @@
-import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -7,31 +6,19 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, Typography } from '@mui/material';
 
-export default function TaskList() {
-  const [checked, setChecked] = React.useState([0]);
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
+export default function TaskList({ tasks, handleToggle }) {
   return (
-    <List sx={{ width: '100%', maxHeight: 360, overflowY: 'auto' }}>
-      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => {
-        const labelId = `checkbox-list-label-${value}`;
+    <Box py={2}>
+      <Typography mb={1} ml={2} sx={{ fontSize: "15px", fontWeight: "bold" }}>Total: {tasks.length}</Typography>
+      <List sx={{ width: '100%', maxHeight: 360, overflowY: 'auto' }}>
+      {tasks.map((task) => {
+        const labelId = `checkbox-list-label-${task.id}`;
 
         return (
           <ListItem
-            key={value}
+            key={task.id}
             secondaryAction={
               <IconButton edge="end" aria-label="actions">
                 <MoreVertIcon />
@@ -39,21 +26,28 @@ export default function TaskList() {
             }
             disablePadding
           >
-            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+            <ListItemButton role={undefined} onClick={() => handleToggle(task)} dense>
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={checked.indexOf(value) !== -1}
+                  checked={task.status === "done"}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+              <ListItemText
+                id={labelId}
+                primary={`${task.name}`}
+                sx={{
+                  textDecoration: task.status === "done" ? "line-through": "none"
+                }}
+              />
             </ListItemButton>
           </ListItem>
         );
       })}
     </List>
+    </Box>
   );
 }

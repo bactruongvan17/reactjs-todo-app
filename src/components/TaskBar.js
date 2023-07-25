@@ -1,12 +1,12 @@
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab, Badge, Chip, Avatar } from "@mui/material";
 import ClearTaskButton from "./ClearTaskButton";
 import { useState } from "react";
 
-export default function TaskBar() {
+export default function TaskBar({ totalPending, totalCompleted, onClear }) {
     const tabs = [
         { id: 'all', label: 'All' },
-        { id: 'pending', label: 'Pending' },
-        { id: 'completed', label: 'Completed' }
+        { id: 'pending', label: <Chip color="info" label="Pending" avatar={<Avatar sx={{ bgcolor: "#ff4c4b", fontWeight: "bold" }} >{totalPending}</Avatar>} /> },
+        { id: 'done', label: <Chip color="success" label="Completed" avatar={<Avatar sx={{ bgcolor: "#56d92d",  fontWeight: "bold" }}>{totalCompleted}</Avatar>} /> },
     ];
 
     const [currTab, setCurrTab] = useState('all');
@@ -29,11 +29,12 @@ export default function TaskBar() {
                     value={tab.id}
                     sx={{
                         textTransform: "none",
+                        cursor: "pointer",
                         minWidth: "fit-content"
                     }} /> 
                 )}
             </Tabs>
-            <ClearTaskButton />
+            {/* <ClearTaskButton onClick={onClear}/> */}
         </Box>
     );
 }
