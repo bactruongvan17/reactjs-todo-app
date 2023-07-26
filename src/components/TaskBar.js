@@ -1,18 +1,22 @@
-import { Box, Tabs, Tab, Badge, Chip, Avatar } from "@mui/material";
+import { Box, Tabs, Tab, Badge } from "@mui/material";
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import ChecklistIcon from '@mui/icons-material/Checklist';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ClearTaskButton from "./ClearTaskButton";
 import { useState } from "react";
 
-export default function TaskBar({ totalPending, totalCompleted, onClear }) {
+export default function TaskBar({ totalPending, totalCompleted, onClear, onFilter }) {
     const tabs = [
-        { id: 'all', label: 'All' },
-        { id: 'pending', label: <Chip color="info" label="Pending" avatar={<Avatar sx={{ bgcolor: "#ff4c4b", fontWeight: "bold" }} >{totalPending}</Avatar>} /> },
-        { id: 'done', label: <Chip color="success" label="Completed" avatar={<Avatar sx={{ bgcolor: "#56d92d",  fontWeight: "bold" }}>{totalCompleted}</Avatar>} /> },
+        { id: 'all', label: <Badge title="All" color="primary"><FormatListBulletedIcon color="primary" /></Badge> },
+        { id: 'pending', label: <Badge title="Pending" badgeContent={totalPending} color="secondary"><PendingActionsIcon sx={{ color: "#afb50b" }} /></Badge> },
+        { id: 'done', label: <Badge title="Completed" badgeContent={totalCompleted} color="success"><ChecklistIcon color="success" /></Badge> },
     ];
 
     const [currTab, setCurrTab] = useState('all');
 
     function handleSwitchTab(tab) {
         setCurrTab(tab);
+        onFilter(tab);
     }
 
     return (
@@ -34,7 +38,7 @@ export default function TaskBar({ totalPending, totalCompleted, onClear }) {
                     }} /> 
                 )}
             </Tabs>
-            {/* <ClearTaskButton onClick={onClear}/> */}
+            <ClearTaskButton onClick={onClear}/>
         </Box>
     );
 }

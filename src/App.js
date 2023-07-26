@@ -1,21 +1,17 @@
-import { useState } from 'react';
 import './App.css';
 import AddTaskForm from './components/AddTaskForm';
 import TaskBar from './components/TaskBar';
 import TaskList from './components/TaskList';
 import { Box, Divider, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { getListTasks, saveTasks } from './apis/task';
 
 function App() {
-  const [tasks, setTasks] = useState([
-    { id: 8, name: "CheckList 8", status: "pending" },
-    { id: 7, name: "CheckList 7", status: "done" },
-    { id: 6, name: "CheckList 6", status: "pending" },
-    { id: 5, name: "CheckList 5", status: "pending" },
-    { id: 4, name: "CheckList 4", status: "done" },
-    { id: 3, name: "CheckList 3", status: "done" },
-    { id: 2, name: "CheckList 2", status: "done" },
-    { id: 1, name: "CheckList 1", status: "pending" },
-  ]);
+  const [tasks, setTasks] = useState(getListTasks());
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
 
   const totalPending = tasks.filter(a => a.status === "pending").length;
   const totalCompleted = tasks.filter(a => a.status === "done").length;
@@ -39,11 +35,26 @@ function App() {
     }
     const newTasks = [...tasks];
     const newTask = {
-      id: newTasks[0].id + 1,
+      id: newTasks.length ? newTasks[0].id + 1 : 1,
       name: value,
       status: "pending",
     };
     newTasks.unshift(newTask);
+    setTasks(newTasks);
+  }
+
+  function handleFilter(status) {
+    if (status === 'all') {
+      setTasks([...tasks]);
+      return;
+    }
+
+    const newTasks = [...tasks].filter(task => task.status === status);
+    setTasks(newTasks);
+  }
+
+  function handleDeleteTask(task) {
+    const newTasks = [...tasks].filter(tsk => tsk.id !== task.id);
     setTasks(newTasks);
   }
 
@@ -56,11 +67,11 @@ function App() {
       boxShadow: "0 0 10px 0 #a7a7a7",
       padding: "20px 0"
   }}>
-      <Typography mb={2} sx={{
+      <Typography mb={3} sx={{
           textAlign: "center",
           fontWeight: "bold",
           fontSize: "20px"
-      }}>Todo App</Typography>
+      }}>Todo List App</Typography>
 
       <Box mb={1} px={"20px"}>
         <AddTaskForm handleSubmit={handleAddNewTask} />
@@ -69,6 +80,7 @@ function App() {
       <Box my={2} px={"20px"}>
         <TaskBar
           onClear={handleClearAllTask}
+          onFilter={handleFilter}
           totalPending={totalPending}
           totalCompleted={totalCompleted}
         />
@@ -77,7 +89,11 @@ function App() {
       <Divider />
 
       <Box px={"20px"}>
-        <TaskList tasks={tasks} handleToggle={handleToggleCheckedTask} />
+        <TaskList
+          tasks={tasks}
+          handleToggle={handleToggleCheckedTask}
+          handleDeleteTask={handleDeleteTask}
+        />
       </Box>
 
   </Box>

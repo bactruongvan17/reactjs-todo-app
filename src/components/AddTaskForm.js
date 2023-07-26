@@ -26,6 +26,7 @@ export default function AddTaskForm({ handleSubmit }) {
                         </InputAdornment>
                     }
                     placeholder="Add a new task"
+                    size="small"
                     inputProps={{
                     'aria-label': 'weight',
                     }}
