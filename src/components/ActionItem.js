@@ -4,7 +4,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ActionItem({ task, handleDeleteTask }) {
+export default function ActionItem({ task, handleDeleteTask, onEdit }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -15,7 +15,7 @@ export default function ActionItem({ task, handleDeleteTask }) {
     };
 
     function handleEdit() {
-        console.log("Edit: " + task.name);
+        onEdit(true);
     }
 
     function handleDelete() {
@@ -43,12 +43,14 @@ export default function ActionItem({ task, handleDeleteTask }) {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem dense onClick={handleEdit}>
-                    <ListItemIcon>
-                        <EditIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Edit</ListItemText>
-                </MenuItem>
+                {
+                    task.status !== "done" && <MenuItem dense onClick={handleEdit}>
+                        <ListItemIcon>
+                            <EditIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Edit</ListItemText>
+                    </MenuItem>
+                }
                 <MenuItem dense onClick={handleDelete}>
                     <ListItemIcon>
                         <DeleteIcon fontSize="small" />
