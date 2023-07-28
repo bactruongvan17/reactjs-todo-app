@@ -4,8 +4,8 @@ import TaskBar from './components/TaskBar';
 import TaskList from './components/TaskList';
 import { Box, Divider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress'; 
 import { getListTasks, saveTask, updateTask, destroyTask, destroyAllTask } from './apis/task';
+import TaskListSkeleton from './components/TaskListSkeleton';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -22,7 +22,6 @@ function App() {
   useEffect(() => {
     const fetchTasks = async () => {
       setIsLoading(true);
-
       const data = await getListTasks(filters);
 
       setTasks(data.data);
@@ -65,8 +64,13 @@ function App() {
       status: task.status === "pending" ? "done" : "pending"
     };
 
-    const newTasks = [...tasks];
-    newTasks[taskIndex] = taskToUpdate;
+    let newTasks = [...tasks];
+
+    if (filters.status !== "all" && (filters.status !== taskToUpdate.status)) {
+      newTasks.splice(taskIndex, 1);
+    } else {
+      newTasks[taskIndex] = taskToUpdate;
+    }
     setTasks(newTasks);
 
     if (taskToUpdate.status === "pending") {
@@ -135,7 +139,7 @@ function App() {
 
   return (
     <Box sx={{
-      width: 400,
+      width: 380,
       background: "#FFFFFF",
       borderRadius: "8px",
       margin: "100px auto auto auto",
@@ -145,7 +149,14 @@ function App() {
       <Typography mb={3} sx={{
           textAlign: "center",
           fontWeight: "bold",
-          fontSize: "20px"
+          fontSize: "26px",
+          backgroundColor: "primary",
+          backgroundImage: `linear-gradient(to right, #121FCF 0%, #CF1512 100%)`,
+          backgroundSize: "100%",
+          backgroundRepeat: "repeat",
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent"
       }}>Todo List App</Typography>
 
       <Box mb={1} px={"20px"}>
@@ -164,8 +175,8 @@ function App() {
       <Divider />
 
       { isLoading ? 
-      <Box pt={"20px"} sx={{ textAlign: "center" }}>
-        <CircularProgress />
+      <Box pt={"20px"} px={"20px"}>
+        <TaskListSkeleton />
       </Box> :
       <Box px={"20px"}>
         <TaskList
@@ -176,6 +187,9 @@ function App() {
         />
       </Box>
       }
+      <Typography mt={2} sx={{ textAlign: "center", fontStyle: "italic", fontSize: "12px", color: "#6b6b6b" }}> 
+        &copy; Copyright by Bac Truong Van
+      </Typography>
   </Box>
   );
 }

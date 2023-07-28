@@ -15,6 +15,9 @@ export default function TaskBar({ totalPending, totalCompleted, onClear, onFilte
     const [currTab, setCurrTab] = useState('all');
 
     function handleSwitchTab(tab) {
+        if (tab === currTab) {
+            return;
+        }
         setCurrTab(tab);
         onFilter(tab);
     }

@@ -3,8 +3,10 @@ import { useState } from "react";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ActionItem({ task, handleDeleteTask, onEdit }) {
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -18,9 +20,11 @@ export default function ActionItem({ task, handleDeleteTask, onEdit }) {
         onEdit(true);
     }
 
-    function handleDelete() {
+    async function handleDelete() {
+        setIsLoadingDelete(true);
+        await handleDeleteTask(task);
+        setIsLoadingDelete(false);
         handleClose();
-        handleDeleteTask(task);
     }
 
     return (
@@ -52,9 +56,9 @@ export default function ActionItem({ task, handleDeleteTask, onEdit }) {
                         <ListItemText>Edit</ListItemText>
                     </MenuItem>
                 }
-                <MenuItem dense onClick={handleDelete}>
+                <MenuItem dense onClick={handleDelete} disabled={isLoadingDelete}>
                     <ListItemIcon>
-                        <DeleteIcon fontSize="small" />
+                        {isLoadingDelete ? <CircularProgress size={20} thickness={6} /> : <DeleteIcon fontSize="small" />}
                     </ListItemIcon>
                     <ListItemText>Delete</ListItemText>
                 </MenuItem>

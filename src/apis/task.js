@@ -21,7 +21,7 @@ export const getListTasks = async (filter = {}) => {
                 totalPending,
                 totalCompleted,
             });
-        }, 0)
+        }, 500)
     });
 }
 
@@ -37,7 +37,7 @@ export const saveTask = async (task) => {
 
             resolve(true);
 
-        }, 0);
+        }, 500);
     });
 } 
 
@@ -58,7 +58,7 @@ export const destroyTask = async (task) => {
 
             resolve(true);
 
-        }, 0);
+        }, 500);
     });
 }
 
@@ -88,6 +88,6 @@ export const updateTask = async (task) => {
 
             resolve(true);
 
-        }, 0);
+        }, 500);
     });
 }

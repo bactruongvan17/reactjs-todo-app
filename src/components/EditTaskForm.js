@@ -8,6 +8,7 @@ export default function EditTaskForm({ task, onCloseEdit, onEditSubmit }) {
     function handleSave(e) {
         if(e.keyCode === 13) {
             if (name === task.name) {
+                onCloseEdit();
                 return;
             }
     
@@ -28,6 +29,7 @@ export default function EditTaskForm({ task, onCloseEdit, onEditSubmit }) {
                     onKeyDown={handleSave}
                     onChange={e => setName(e.target.value)}
                     variant="standard"
+                    autoFocus
                     InputProps={{
                         style: { fontSize: "14px" },
                     }}
