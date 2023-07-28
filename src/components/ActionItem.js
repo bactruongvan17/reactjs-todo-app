@@ -19,6 +19,7 @@ export default function ActionItem({ task, handleDeleteTask, onEdit }) {
     }
 
     function handleDelete() {
+        handleClose();
         handleDeleteTask(task);
     }
 

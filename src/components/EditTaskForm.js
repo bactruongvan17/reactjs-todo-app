@@ -11,10 +11,8 @@ export default function EditTaskForm({ task, onCloseEdit, onEditSubmit }) {
                 return;
             }
     
-            onEditSubmit({
-                ...task,
-                name: name
-            })
+            task.name = name;
+            onEditSubmit(task);
         }
     }
 
