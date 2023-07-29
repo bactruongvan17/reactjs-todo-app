@@ -8,7 +8,7 @@
 * TypeScript: ^5.1.6
 * Storage: localStorage
 
-Demo: [https://bactruongvan17.github.io/reactjs-todo-app](https://bactruongvan17.github.io/reactjs-todo-app)
+Demo: [https://bactruongvan17.github.io/todo-app](https://bactruongvan17.github.io/reactjs-todo-app)
 
 ## Available Scripts
 
