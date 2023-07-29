@@ -1,13 +1,15 @@
+<div style="text-align: center;">
 ![Todo App](./docs/images/todo-app.png)
-
+</div>
 # Todo List App
 
 * Node: v18.16.0
 * React: ^18.2.0
 * Npx: 9.5.1
 * TypeScript: ^5.1.6
+* Storage: localStorage
 
-[Demo](https://bactruongvan17.github.io/reactjs-todo-app/).
+Demo: [https://bactruongvan17.github.io/reactjs-todo-app](https://bactruongvan17.github.io/reactjs-todo-app)
 
 ## Available Scripts
 
