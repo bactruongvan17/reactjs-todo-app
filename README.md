@@ -1,6 +1,5 @@
-<div style="text-align: center;">
-    ![Todo App](./docs/images/todo-app.png)
-</div>
+![Todo App](./docs/images/todo-app.png)
+
 # Todo List App
 
 * Node: v18.16.0
