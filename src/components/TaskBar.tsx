@@ -5,7 +5,14 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ClearTaskButton from "./ClearTaskButton";
 import { useState } from "react";
 
-export default function TaskBar({ totalPending, totalCompleted, onClear, onFilter }) {
+type TaskBarProps = {
+    totalPending: number,
+    totalCompleted: number,
+    onClear: Function,
+    onFilter: Function,
+};
+
+export default function TaskBar({ totalPending, totalCompleted, onClear, onFilter }: TaskBarProps) {
     const tabs = [
         { id: 'all', label: <Badge title="All" color="primary"><FormatListBulletedIcon color="primary" /></Badge> },
         { id: 'pending', label: <Badge title="Pending" badgeContent={totalPending} color="secondary"><PendingActionsIcon sx={{ color: "#afb50b" }} /></Badge> },
@@ -14,7 +21,7 @@ export default function TaskBar({ totalPending, totalCompleted, onClear, onFilte
 
     const [currTab, setCurrTab] = useState('all');
 
-    function handleSwitchTab(tab) {
+    function handleSwitchTab(tab: string) {
         if (tab === currTab) {
             return;
         }

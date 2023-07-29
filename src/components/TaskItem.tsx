@@ -6,12 +6,20 @@ import Checkbox from '@mui/material/Checkbox';
 import ActionItem from "./ActionItem";
 import EditTaskForm from "./EditTaskForm";
 import { useState } from "react";
+import { Task } from "../types/tasks";
 
-export default function TaskItem({ task, handleToggle, handleDeleteTask, onEditTask }) {
+type TaskItemProps = {
+  task: Task,
+  handleToggle: Function,
+  handleDeleteTask: Function,
+  onEditTask: Function,
+};
+
+export default function TaskItem({ task, handleToggle, handleDeleteTask, onEditTask }: TaskItemProps) {
   const labelId = `checkbox-list-label-${task.id}`;
   const [isEdit, setIsEdit] = useState(false);
 
-  function handleEditTask(task) {
+  function handleEditTask(task: any) {
     onEditTask(task);
     setIsEdit(false);
   }
@@ -22,7 +30,7 @@ export default function TaskItem({ task, handleToggle, handleDeleteTask, onEditT
         <ListItem
           key={task.id}
           secondaryAction={
-            <ActionItem task={task} handleDeleteTask={handleDeleteTask} onEdit={(flag) => setIsEdit(flag)} />
+            <ActionItem task={task} handleDeleteTask={handleDeleteTask} onEdit={(flag: boolean) => setIsEdit(flag)} />
           }
           disablePadding
         >

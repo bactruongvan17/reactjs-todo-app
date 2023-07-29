@@ -1,15 +1,22 @@
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Task } from "../types/tasks";
 
-export default function ActionItem({ task, handleDeleteTask, onEdit }) {
+type ActionItemProps = {
+    task: Task,
+    handleDeleteTask: Function,
+    onEdit: Function,
+};
+
+export default function ActionItem({ task, handleDeleteTask, onEdit }: ActionItemProps) {
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {

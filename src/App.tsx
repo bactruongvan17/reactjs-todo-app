@@ -6,9 +6,10 @@ import { Box, Divider, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getListTasks, saveTask, updateTask, destroyTask, destroyAllTask } from './apis/task';
 import TaskListSkeleton from './components/TaskListSkeleton';
+import { Task } from './types/tasks';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(Array<Task>);
   const [totalPending, setTotalPending] = useState(0);
   const [totalCompleted, setTotalCompleted] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,9 +52,9 @@ function App() {
    * Handle Toggle Completed Task
    * @param {object} task 
    */
-  async function handleToggleCheckedTask(task) {
+  async function handleToggleCheckedTask(task: Task) {
     
-    const taskIndex = tasks.findIndex(tsk => tsk.id === task.id);
+    const taskIndex = tasks.findIndex((tsk: Task) => tsk.id === task.id);
     if (taskIndex === -1) {
       return;
     }
@@ -64,7 +65,7 @@ function App() {
       status: task.status === "pending" ? "done" : "pending"
     };
 
-    let newTasks = [...tasks];
+    let newTasks: Array<Task> = [...tasks];
 
     if (filters.status !== "all" && (filters.status !== taskToUpdate.status)) {
       newTasks.splice(taskIndex, 1);
@@ -89,18 +90,18 @@ function App() {
    * @param {string} value 
    * @returns 
    */
-  async function handleAddNewTask(value) {
+  async function handleAddNewTask(value: string) {
     if (!value) {
       return;
     }
 
-    const newTask = {
+    const newTask: Task = {
       id: (new Date()).getTime(),
       name: value,
       status: "pending",
     };
 
-    const newTasks = [...tasks, newTask];
+    const newTasks: Array<Task> = [...tasks, newTask];
     setTasks(newTasks.sort((a, b) => b.id - a.id));
 
     setTotalPending(totalPending + 1);
@@ -112,7 +113,7 @@ function App() {
    * Handle filter task
    * @param {string} status 
    */
-  function handleFilter(status) {
+  function handleFilter(status: string) {
     setFilters({
       ...filters,
       status,
@@ -121,19 +122,19 @@ function App() {
 
   /**
    * Handle delete a task
-   * @param {object} task 
+   * @param {Task} task 
    */
-  async function handleDeleteTask(task) {
+  async function handleDeleteTask(task: Task) {
     await destroyTask(task);
     setIsForceReload(!isForceReload);
   }
 
   /**
    * Handle edit a task
-   * @param {string} task 
+   * @param {Task} task 
    * @returns 
    */
-  async function handleEditTask(task) {    
+  async function handleEditTask(task: Task) {    
     await updateTask(task);
   }
 

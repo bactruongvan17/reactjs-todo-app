@@ -1,12 +1,16 @@
 import { FormControl, OutlinedInput, InputAdornment } from "@mui/material";
 import SegmentIcon from '@mui/icons-material/Segment';
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function AddTaskForm({ handleSubmit }) {
+type AddTaskFormProps = {
+    handleSubmit: Function
+};
+
+export default function AddTaskForm({ handleSubmit }: AddTaskFormProps) {
     const [value, setValue] = useState('');
 
-    function handleEnter(e) {
-        if(e.keyCode === 13) {
+    function handleEnter(e: React.KeyboardEvent) {
+        if(e.key === "Enter") {
             handleSubmit(value);
             setValue('');
         }

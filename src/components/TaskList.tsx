@@ -1,13 +1,21 @@
 import List from '@mui/material/List';
 import { Box, Typography } from '@mui/material';
 import TaskItem from './TaskItem';
+import { Task } from "../types/tasks";
 
-export default function TaskList({ tasks, handleToggle, handleDeleteTask, onEditTask }) {
+type TaskListProps = {
+  tasks: Array<Task>,
+  handleToggle: Function,
+  handleDeleteTask: Function,
+  onEditTask: Function,
+};
+
+export default function TaskList({ tasks, handleToggle, handleDeleteTask, onEditTask }: TaskListProps) {
   return (
     <Box pt={2}>
       { tasks.length ? 
       <List sx={{ width: '100%', maxHeight: 360, overflowY: 'auto' }}>
-        {tasks.map((task) => 
+        {tasks.map((task: any) => 
           <TaskItem
             key={task.id}
             task={task}
