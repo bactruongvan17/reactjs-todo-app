@@ -1,5 +1,5 @@
 <div style="text-align: center;">
-![Todo App](./docs/images/todo-app.png)
+    ![Todo App](./docs/images/todo-app.png)
 </div>
 # Todo List App
 
