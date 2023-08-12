@@ -3,3 +3,7 @@ export type Task = {
     name: string,
     status: string,
 };
+
+export type TaskFilter = {
+    status: string
+}

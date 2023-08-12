@@ -4,15 +4,17 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ClearTaskButton from "./ClearTaskButton";
 import { useState } from "react";
+import { useAppSelector } from '../../../app/hooks';
+import { selectTotalPendingTasks, selectTotalCompletedTasks } from "../taskSlice";
 
 type TaskBarProps = {
-    totalPending: number,
-    totalCompleted: number,
-    onClear: Function,
     onFilter: Function,
 };
 
-export default function TaskBar({ totalPending, totalCompleted, onClear, onFilter }: TaskBarProps) {
+export default function TaskBar({ onFilter }: TaskBarProps) {
+    const totalPending = useAppSelector(selectTotalPendingTasks);
+    const totalCompleted = useAppSelector(selectTotalCompletedTasks);
+
     const tabs = [
         { id: 'all', label: <Badge title="All" color="primary"><FormatListBulletedIcon color="primary" /></Badge> },
         { id: 'pending', label: <Badge title="Pending" badgeContent={totalPending} color="secondary"><PendingActionsIcon sx={{ color: "#afb50b" }} /></Badge> },
@@ -48,7 +50,7 @@ export default function TaskBar({ totalPending, totalCompleted, onClear, onFilte
                     }} /> 
                 )}
             </Tabs>
-            <ClearTaskButton onClick={onClear}/>
+            <ClearTaskButton />
         </Box>
     );
 }

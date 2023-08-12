@@ -1,27 +1,21 @@
 import List from '@mui/material/List';
 import { Box, Typography } from '@mui/material';
 import TaskItem from './TaskItem';
-import { Task } from "../types/tasks";
+import { useAppSelector } from '../../../app/hooks';
+import { selectTasks } from '../taskSlice';
+import { Task } from '../taskType';
 
-type TaskListProps = {
-  tasks: Array<Task>,
-  handleToggle: Function,
-  handleDeleteTask: Function,
-  onEditTask: Function,
-};
+export default function TaskList() {
+  const tasks = useAppSelector(selectTasks);
 
-export default function TaskList({ tasks, handleToggle, handleDeleteTask, onEditTask }: TaskListProps) {
   return (
     <Box pt={2}>
       { tasks.length ? 
       <List sx={{ width: '100%', maxHeight: 360, overflowY: 'auto' }}>
-        {tasks.map((task: any) => 
+        {tasks.map((task: Task) => 
           <TaskItem
             key={task.id}
             task={task}
-            handleToggle={handleToggle}
-            handleDeleteTask={handleDeleteTask}
-            onEditTask={onEditTask}
           />
         )}
       </List>

@@ -6,35 +6,38 @@ import Checkbox from '@mui/material/Checkbox';
 import ActionItem from "./ActionItem";
 import EditTaskForm from "./EditTaskForm";
 import { useState } from "react";
-import { Task } from "../types/tasks";
+import { useAppDispatch } from '../../../app/hooks';
+import { editTask } from "../taskSlice";
+import { Task } from "../taskType";
 
 type TaskItemProps = {
   task: Task,
-  handleToggle: Function,
-  handleDeleteTask: Function,
-  onEditTask: Function,
 };
 
-export default function TaskItem({ task, handleToggle, handleDeleteTask, onEditTask }: TaskItemProps) {
+export default function TaskItem({ task }: TaskItemProps) {
+  const dispatch = useAppDispatch();
+
   const labelId = `checkbox-list-label-${task.id}`;
   const [isEdit, setIsEdit] = useState(false);
 
-  function handleEditTask(task: any) {
-    onEditTask(task);
-    setIsEdit(false);
+  const handleToggleCompleteTask = () => {
+    dispatch(editTask({
+      ...task,
+      status: task.status === 'pending' ? 'done' : 'pending',
+    }))
   }
 
   return (
     <>
-      {isEdit ? <EditTaskForm task={task} onCloseEdit={() => setIsEdit(false)} onEditSubmit={handleEditTask} /> :
+      {isEdit ? <EditTaskForm task={task} onCloseEdit={() => setIsEdit(false)} /> :
         <ListItem
           key={task.id}
           secondaryAction={
-            <ActionItem task={task} handleDeleteTask={handleDeleteTask} onEdit={(flag: boolean) => setIsEdit(flag)} />
+            <ActionItem task={task} onEdit={(flag: boolean) => setIsEdit(flag)} />
           }
           disablePadding
         >
-          <ListItemButton role={undefined} onClick={() => handleToggle(task)} dense>
+          <ListItemButton role={undefined} onClick={handleToggleCompleteTask} dense>
             <ListItemIcon>
               <Checkbox
                 edge="start"

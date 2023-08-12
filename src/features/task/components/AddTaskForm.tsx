@@ -1,17 +1,23 @@
 import { FormControl, OutlinedInput, InputAdornment } from "@mui/material";
 import SegmentIcon from '@mui/icons-material/Segment';
 import React, { useState } from "react";
+import { useAppDispatch } from '../../../app/hooks';
+import { addTask } from "../taskSlice";
+import { Task } from "../taskType";
 
-type AddTaskFormProps = {
-    handleSubmit: Function
-};
-
-export default function AddTaskForm({ handleSubmit }: AddTaskFormProps) {
+export default function AddTaskForm() {
     const [value, setValue] = useState('');
+    const dispatch = useAppDispatch();
 
     function handleEnter(e: React.KeyboardEvent) {
         if(e.key === "Enter") {
-            handleSubmit(value);
+            const task: Task = {
+                id: (new Date()).getTime(),
+                name: value,
+                status: 'pending',
+            };
+
+            dispatch(addTask(task));
             setValue('');
         }
     }

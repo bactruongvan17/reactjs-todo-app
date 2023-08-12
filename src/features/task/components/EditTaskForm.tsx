@@ -1,15 +1,18 @@
 import { Box, FormControl, IconButton, TextField } from "@mui/material";
 import React, { useState } from "react";
 import ClearIcon from '@mui/icons-material/Clear';
-import { Task } from "../types/tasks";
+import { useAppDispatch } from "../../../app/hooks";
+import { editTask } from "../taskSlice";
+import { Task } from "../taskType";
 
 type EditTaskProps = {
     task: Task,
-    onCloseEdit: Function,  
-    onEditSubmit: Function,  
+    onCloseEdit: Function,
 };
 
-export default function EditTaskForm({ task, onCloseEdit, onEditSubmit }: EditTaskProps) {
+export default function EditTaskForm({ task, onCloseEdit }: EditTaskProps) {
+    const dispatch = useAppDispatch();
+
     const [name, setName] = useState(task.name);
 
     function handleSave(e: React.KeyboardEvent) {
@@ -18,9 +21,13 @@ export default function EditTaskForm({ task, onCloseEdit, onEditSubmit }: EditTa
                 onCloseEdit();
                 return;
             }
-    
-            task.name = name;
-            onEditSubmit(task);
+            
+            dispatch(editTask({
+                ...task,
+                name,
+            }));
+
+            onCloseEdit();
         }
     }
 

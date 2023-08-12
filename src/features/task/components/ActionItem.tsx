@@ -4,15 +4,18 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Task } from "../types/tasks";
+import { useAppDispatch } from '../../../app/hooks';
+import { deleteTask } from "../taskSlice";
+import { Task } from "../taskType";
 
 type ActionItemProps = {
     task: Task,
-    handleDeleteTask: Function,
     onEdit: Function,
 };
 
-export default function ActionItem({ task, handleDeleteTask, onEdit }: ActionItemProps) {
+export default function ActionItem({ task, onEdit }: ActionItemProps) {
+    const dispatch = useAppDispatch();
+
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -23,13 +26,9 @@ export default function ActionItem({ task, handleDeleteTask, onEdit }: ActionIte
         setAnchorEl(null);
     };
 
-    function handleEdit() {
-        onEdit(true);
-    }
-
     async function handleDelete() {
         setIsLoadingDelete(true);
-        await handleDeleteTask(task);
+        dispatch(deleteTask(task));
         setIsLoadingDelete(false);
         handleClose();
     }
@@ -56,7 +55,7 @@ export default function ActionItem({ task, handleDeleteTask, onEdit }: ActionIte
                 onClose={handleClose}
             >
                 {
-                    task.status !== "done" && <MenuItem dense onClick={handleEdit}>
+                    task.status !== "done" && <MenuItem dense onClick={() => onEdit(true)}>
                         <ListItemIcon>
                             <EditIcon fontSize="small" />
                         </ListItemIcon>
