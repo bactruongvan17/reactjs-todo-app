@@ -1,22 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from './../../app/store';
-import { Task } from './taskType';
+import { Task, TaskFilter, TaskStatus } from './taskType';
 import { fetchTasks, saveTask, updateTask, destroyTask, destroyAllTask } from './taskAPI';
 
 interface TaskState {
     data: Task[],
+    totalPending: number,
+    totalCompleted: number,
     isLoadingTasks: boolean,
 }
 
 const initialState: TaskState = {
     data: [],
+    totalPending: 0,
+    totalCompleted: 0,
     isLoadingTasks: false,
 };
 
 export const getListTasks = createAsyncThunk(
     'task/fetchTasks',
-    async () => {
-        return await fetchTasks();
+    async (filters?: TaskFilter) => {
+        return await fetchTasks(filters);
     }
 );
 
@@ -30,6 +34,14 @@ export const addTask = createAsyncThunk(
 
 export const editTask = createAsyncThunk(
     'task/editTask',
+    async (task: Task) => {
+        await updateTask(task);
+        return task;
+    }
+);
+
+export const changeStatusTask = createAsyncThunk(
+    'task/changeStatusTask',
     async (task: Task) => {
         await updateTask(task);
         return task;
@@ -67,7 +79,9 @@ export const taskSlice = createSlice({
                 state.isLoadingTasks = true;
             })
             .addCase(getListTasks.fulfilled, (state, action) => {
-                state.data = action.payload;
+                state.data = action.payload.data;
+                state.totalPending = action.payload.totalPending;
+                state.totalCompleted = action.payload.totalCompleted;
                 state.isLoadingTasks = false;
             })
             .addCase(getListTasks.rejected, (state) => {
@@ -78,8 +92,9 @@ export const taskSlice = createSlice({
                 state.isLoadingTasks = true;
             })
             .addCase(addTask.fulfilled, (state, action) => {
-                state.data.push(action.payload);
-                state.isLoadingTasks = false;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                state.data.unshift(action.payload)
+                state.isLoadingTasks = false;
+                state.totalPending++;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             })
             // edit task
             .addCase(editTask.fulfilled, (state, action) => {
@@ -90,6 +105,23 @@ export const taskSlice = createSlice({
 
                 state.data[taskEditedIndexes] = action.payload;
             })
+            // change status task
+            .addCase(changeStatusTask.fulfilled, (state, action) => {
+                const taskEditedIndexes = state.data.findIndex(task => task.id === action.payload.id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                if (taskEditedIndexes === -1) {
+                    return;
+                }
+
+                state.data[taskEditedIndexes] = action.payload;
+
+                if (action.payload.status === TaskStatus.Pending) {
+                    state.totalPending++;
+                    state.totalCompleted--;
+                } else {
+                    state.totalPending--;
+                    state.totalCompleted++;
+                }
+            })
             // delete task
             .addCase(deleteTask.fulfilled, (state, action) => {
                 const taskDeletedIndexes = state.data.findIndex(task => task.id === action.payload.id);
@@ -98,18 +130,25 @@ export const taskSlice = createSlice({
                 }
 
                 state.data.splice(taskDeletedIndexes, 1);
+
+                if (action.payload.status === TaskStatus.Pending) {
+                    state.totalPending--;
+                } else {
+                    state.totalCompleted--;
+                }
             })
             // clear tasks
             .addCase(clearAllTasks.fulfilled, (state) => {
                 state.data = [];
+                state.totalPending = 0;
+                state.totalCompleted = 0;
             })
     },
 });
 
 export const selectTasks = (state: RootState) => state.task.data;
-
-export const selectTotalPendingTasks = (state: RootState): number => state.task.data.filter(task => task.status === "pending").length;
-export const selectTotalCompletedTasks = (state: RootState): number => state.task.data.filter(task => task.status === "done").length;
+export const selectTotalPendingTasks = (state: RootState) => state.task.totalPending;
+export const selectTotalCompletedTasks = (state: RootState) => state.task.totalCompleted;
 
 export const isLoadingTasks = (state: RootState): boolean => state.task.isLoadingTasks;
 

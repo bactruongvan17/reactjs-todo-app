@@ -2,21 +2,29 @@ import { Box, Divider, Typography } from "@mui/material";
 import AddTaskForm from "./components/AddTaskForm";
 import TaskBar from "./components/TaskBar";
 import TaskListSkeleton from "./components/TaskListSkeleton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TaskList from "./components/TaskList";
 import { getListTasks, isLoadingTasks } from "./taskSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { TaskFilter, TaskStatusFilter } from "./taskType";
 
 export default function Task() {
     const dispatch = useAppDispatch();
     const isLoading = useAppSelector(isLoadingTasks);
+    const [filters, setFilters] = useState<TaskFilter>({
+      status: TaskStatusFilter.All
+    });
 
-    const handleFilter = () => {
+    const handleFilter = (status: TaskStatusFilter) => {
+      setFilters({
+        ...filters,
+        status,
+      });
     }
 
     useEffect(() => {
-      dispatch(getListTasks());
-    }, []);
+      dispatch(getListTasks(filters));
+    }, [filters]);
 
     return (
         <Box sx={{

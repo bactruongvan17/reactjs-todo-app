@@ -7,8 +7,8 @@ import ActionItem from "./ActionItem";
 import EditTaskForm from "./EditTaskForm";
 import { useState } from "react";
 import { useAppDispatch } from '../../../app/hooks';
-import { editTask } from "../taskSlice";
-import { Task } from "../taskType";
+import { changeStatusTask } from "../taskSlice";
+import { Task, TaskStatus } from "../taskType";
 
 type TaskItemProps = {
   task: Task,
@@ -21,9 +21,9 @@ export default function TaskItem({ task }: TaskItemProps) {
   const [isEdit, setIsEdit] = useState(false);
 
   const handleToggleCompleteTask = () => {
-    dispatch(editTask({
+    dispatch(changeStatusTask({
       ...task,
-      status: task.status === 'pending' ? 'done' : 'pending',
+      status: task.status === TaskStatus.Pending ? TaskStatus.Completed : TaskStatus.Pending,
     }))
   }
 
@@ -41,7 +41,7 @@ export default function TaskItem({ task }: TaskItemProps) {
             <ListItemIcon>
               <Checkbox
                 edge="start"
-                checked={task.status === "done"}
+                checked={task.status === TaskStatus.Completed}
                 tabIndex={-1}
                 disableRipple
                 inputProps={{ 'aria-labelledby': labelId }}

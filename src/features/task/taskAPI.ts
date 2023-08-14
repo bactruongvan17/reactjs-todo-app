@@ -1,10 +1,11 @@
-import { Task } from "./taskType";
+import { Task, TaskFilter, TaskStatus, TaskStatusFilter } from "./taskType";
 
-export const fetchTasks = async (): Promise<Task[]> => {
+export const fetchTasks = async (filters?: TaskFilter): Promise<{data: Task[], totalPending: number, totalCompleted: number}> => {
     return new Promise(resolve => {
         setTimeout(() => {
             const localData = localStorage.getItem('tasks');
             let data = localData ? JSON.parse(localData) : [];
+            
             data = data.map((tsk: any) => {
                 const tk: Task = {
                     id: tsk.id,
@@ -15,7 +16,20 @@ export const fetchTasks = async (): Promise<Task[]> => {
                 return tk;
             });
 
-            resolve(data);
+            data.sort((a: Task, b: Task) => b.id - a.id);
+
+            const totalPending = data.filter((task: Task) => task.status === TaskStatus.Pending).length;
+            const totalCompleted = data.filter((task: Task) => task.status === TaskStatus.Completed).length;
+            
+            if (filters && filters?.status !== TaskStatusFilter.All.toString()) {
+                data = data.filter((task: Task) => task.status.toString() === filters?.status);
+            }
+
+            resolve({
+                data,
+                totalPending,
+                totalCompleted,
+            });
         }, 500)
     });
 }
@@ -24,7 +38,7 @@ export const saveTask = async (task: Task): Promise<boolean> => {
     return new Promise((resolve) => {
         setTimeout(async () => {
             const allTasksReq = await fetchTasks();
-            const tasks = allTasksReq;
+            const tasks = allTasksReq.data;
 
             tasks.push(task);
 
@@ -40,7 +54,7 @@ export const updateTask = async (task: Task): Promise<boolean> => {
     return new Promise((resolve) => {
         setTimeout(async () => {
             const allTasksReq = await fetchTasks();
-            const tasks = allTasksReq;
+            const tasks = allTasksReq.data;
 
             const taskIndex = tasks.findIndex(tsk => tsk.id === task.id);
             if (taskIndex === -1) {
@@ -61,7 +75,7 @@ export const destroyTask = async (task: Task): Promise<boolean> => {
     return new Promise((resolve) => {
         setTimeout(async () => {
             const allTasksReq = await fetchTasks();
-            const tasks = allTasksReq;
+            const tasks = allTasksReq.data;
 
             const taskIndex = tasks.findIndex(tsk => tsk.id === task.id);
             if (taskIndex === -1) {

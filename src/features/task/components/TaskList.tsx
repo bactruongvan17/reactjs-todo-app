@@ -7,6 +7,8 @@ import { Task } from '../taskType';
 
 export default function TaskList() {
   const tasks = useAppSelector(selectTasks);
+  console.log(tasks);
+  
 
   return (
     <Box pt={2}>

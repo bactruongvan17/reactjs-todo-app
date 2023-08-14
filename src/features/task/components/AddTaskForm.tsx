@@ -3,7 +3,7 @@ import SegmentIcon from '@mui/icons-material/Segment';
 import React, { useState } from "react";
 import { useAppDispatch } from '../../../app/hooks';
 import { addTask } from "../taskSlice";
-import { Task } from "../taskType";
+import { Task, TaskStatus } from "../taskType";
 
 export default function AddTaskForm() {
     const [value, setValue] = useState('');
@@ -14,7 +14,7 @@ export default function AddTaskForm() {
             const task: Task = {
                 id: (new Date()).getTime(),
                 name: value,
-                status: 'pending',
+                status: TaskStatus.Pending,
             };
 
             dispatch(addTask(task));

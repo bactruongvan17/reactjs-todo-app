@@ -6,6 +6,7 @@ import ClearTaskButton from "./ClearTaskButton";
 import { useState } from "react";
 import { useAppSelector } from '../../../app/hooks';
 import { selectTotalPendingTasks, selectTotalCompletedTasks } from "../taskSlice";
+import { TaskStatusFilter } from "../taskType";
 
 type TaskBarProps = {
     onFilter: Function,
@@ -16,14 +17,14 @@ export default function TaskBar({ onFilter }: TaskBarProps) {
     const totalCompleted = useAppSelector(selectTotalCompletedTasks);
 
     const tabs = [
-        { id: 'all', label: <Badge title="All" color="primary"><FormatListBulletedIcon color="primary" /></Badge> },
-        { id: 'pending', label: <Badge title="Pending" badgeContent={totalPending} color="secondary"><PendingActionsIcon sx={{ color: "#afb50b" }} /></Badge> },
-        { id: 'done', label: <Badge title="Completed" badgeContent={totalCompleted} color="success"><ChecklistIcon color="success" /></Badge> },
+        { id: TaskStatusFilter.All, label: <Badge title="All" color="primary"><FormatListBulletedIcon color="primary" /></Badge> },
+        { id: TaskStatusFilter.Pending, label: <Badge title="Pending" badgeContent={totalPending} color="secondary"><PendingActionsIcon sx={{ color: "#afb50b" }} /></Badge> },
+        { id: TaskStatusFilter.Completed, label: <Badge title="Completed" badgeContent={totalCompleted} color="success"><ChecklistIcon color="success" /></Badge> },
     ];
 
     const [currTab, setCurrTab] = useState('all');
 
-    function handleSwitchTab(tab: string) {
+    function handleSwitchTab(tab: TaskStatusFilter) {
         if (tab === currTab) {
             return;
         }
